@@ -77,20 +77,56 @@ public:
     }
 };
 
+class Solution2 {
+public:
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        int m = nums1.size();
+        int n = nums2.size();
+        int l = m + n;
+        if (l % 2) return 1.0 * findKth(nums1, nums2, (l + 1)/ 2);
+        else return 0.5 * (findKth(nums1, nums2, l/2) + findKth(nums1, nums2, l/2 + 1));
+    }
+
+    int findKth(vector<int> nums1, vector<int> nums2, int k) {
+        int m = nums1.size();
+        int n = nums2.size();
+        if (m > n) return findKth(nums2, nums1, k);
+        if (m == 0) return nums2[k-1];
+        if (k == 1) return min(nums1[0], nums2[0]);
+        int i, j;
+        if (m < k/2) {
+            i = m - 1;
+            j = k - m - 1;
+        } else {
+            i = k/2 - 1;
+            j = k - k/2 - 1;
+        }
+        if (nums1[i] < nums2[j]) {
+            return findKth(vector<int> (nums1.begin() + i + 1, nums1.end()), nums2, k - i - 1);
+        } else if (nums1[i] > nums2[j]){
+            return findKth(nums1, vector<int> (nums2.begin() + j + 1, nums2.end()), k - j - 1);
+        } else {
+            return nums1[i];
+        }
+    }
+};
+
 int main(){
-    int n1[1] = {1};
-    int n2[1] = {2};
+    int n1[1] = {3};
+    int n2[3] = {1,2,4};
 
     vector<int> vn1 (n1, n1+1);
-    vector<int> vn2 (n2, n2+1);
+    vector<int> vn2 (n2, n2+3);
     
     for (int i=0; i<vn1.size(); i++) cout << vn1[i] << " ";
     cout << endl;
     for (int i=0; i<vn2.size(); i++) cout << vn2[i] << " ";
     cout << endl;
 
-    Solution s;
+    Solution2 s;
     cout << s.findMedianSortedArrays(vn1, vn2) << endl;
+    cout << s.findKth(vn1, vn2, 2) << endl;
+    cout << s.findKth(vn1, vn2, 3) << endl;
 
     return 0;
 }
